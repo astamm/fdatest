@@ -8,6 +8,10 @@
 [![R-CMD-check](https://github.com/permaverse/fdatest/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/permaverse/fdatest/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/permaverse/fdatest/graph/badge.svg)](https://app.codecov.io/gh/permaverse/fdatest)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/fdatest)](https://CRAN.R-project.org/package=fdatest)
+[![test-coverage](https://github.com/permaverse/fdatest/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/permaverse/fdatest/actions/workflows/test-coverage.yaml)
+[![pkgdown](https://github.com/permaverse/fdatest/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/permaverse/fdatest/actions/workflows/pkgdown.yaml)
 <!-- badges: end -->
 
 The goal of fdatest is to implement various statistical methods for
@@ -44,7 +48,8 @@ library(fdatest)
 withr::with_seed(1234, {
   out <- TWT2(NASAtemp$paris, NASAtemp$milan)
 })
-#> [1] "Threshold-wise tests"
+#> 
+#> ── Threshold-wise tests ────────────────────────────────────────────────────────
 
 # Plotting the results of the TWT
 plot(

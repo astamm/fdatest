@@ -54,9 +54,6 @@
 #'
 #' @export
 #' @examples 
-#' # Importing the NASA temperatures data set
-#' data(NASAtemp)
-#'
 #' # Performing the TWT for two populations
 #' TWT.result <- fdatest2(
 #'   NASAtemp$paris, NASAtemp$milan, 

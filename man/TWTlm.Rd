@@ -57,8 +57,6 @@ Threshold-wise testing procedure (TWT) for testing the significance of the
 effects of scalar covariates on a functional population.
 }
 \examples{
-# Importing the NASA temperatures data set
-data(NASAtemp)
 # Defining the covariates
 temperature <- rbind(NASAtemp$milan, NASAtemp$paris)
 groups <- c(rep(0, 22), rep(1, 22))

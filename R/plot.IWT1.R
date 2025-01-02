@@ -56,9 +56,6 @@
 #'
 #' @export
 #' @examples 
-#' # Importing the NASA temperatures data set
-#' data(NASAtemp)
-#'
 #' # Performing the IWT for one population
 #' IWT.result <- IWT1(NASAtemp$paris, mu = 4, B = 10L)
 #'

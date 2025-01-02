@@ -66,9 +66,6 @@ graphical output of the IWT for the test of the mean of one population:
 functional data and IWT-adjusted p-values are plotted.
 }
 \examples{
-# Importing the NASA temperatures data set
-data(NASAtemp)
-
 # Performing the IWT for one population
 IWT.result <- IWT1(NASAtemp$paris, mu = 4, B = 10L)
 

@@ -72,9 +72,6 @@ unadjusted p-value function controls the point-wise error rate. The adjusted
 p-value function controls the family-wise error rate asymptotically.
 }
 \examples{
-# Importing the NASA temperatures data set
-data(NASAtemp)
-
 # Performing the TWT for two populations
 TWT.result <- TWT2(NASAtemp$paris, NASAtemp$milan)
 

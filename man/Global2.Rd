@@ -76,9 +76,6 @@ unadjusted p-value function controls the point-wise error rate. The adjusted
 p-value function controls the interval-wise error rate.
 }
 \examples{
-# Importing the NASA temperatures data set
-data(NASAtemp)
-
 # Performing the Global for two populations
 Global.result <- Global2(NASAtemp$paris, NASAtemp$milan)
 

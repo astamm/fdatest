@@ -61,9 +61,6 @@
 #'
 #' @export
 #' @examples
-#' # Importing the NASA temperatures data set
-#' data(NASAtemp)
-#'
 #' # Performing the PCT for two populations
 #' # Choosing as partition the 4 seasons of the year
 #' partition <- c(

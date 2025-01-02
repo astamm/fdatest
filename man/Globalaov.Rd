@@ -87,8 +87,6 @@ p-value function controls the family-wise error rate weakly. Since this is a
 global test, the adjusted p-value function is constant.
 }
 \examples{
-# Importing the NASA temperatures data set
-data(NASAtemp)
 temperature <- rbind(NASAtemp$milan, NASAtemp$paris)
 groups <- c(rep(0, 22), rep(1, 22))
 

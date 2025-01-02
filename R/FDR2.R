@@ -56,9 +56,6 @@
 #'
 #' @export
 #' @examples
-#' # Importing the NASA temperatures data set
-#' data(NASAtemp)
-#'
 #' # Performing the fBH for two populations
 #' 
 #' FDR.result <- FDR2(NASAtemp$paris, NASAtemp$milan)

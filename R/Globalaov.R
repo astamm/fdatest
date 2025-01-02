@@ -76,8 +76,6 @@
 #'
 #' @export
 #' @examples
-#' # Importing the NASA temperatures data set
-#' data(NASAtemp)
 #' temperature <- rbind(NASAtemp$milan, NASAtemp$paris)
 #' groups <- c(rep(0, 22), rep(1, 22))
 #'

@@ -76,9 +76,6 @@ The unadjusted p-value function controls the point-wise error rate. The
 adjusted p-value function controls the family-wise error rate asymptotically.
 }
 \examples{
-# Importing the NASA temperatures data set
-data(NASAtemp)
-
 # Performing the PCT for two populations
 # Choosing as partition the 4 seasons of the year
 partition <- c(

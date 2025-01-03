@@ -5,29 +5,31 @@
 \title{Threshold-wise testing procedure for testing functional-on-scalar linear
 models}
 \usage{
-TWTlm(formula, B = 1000L, method = "residuals", dx = NULL)
+TWTlm(formula, dx = NULL, B = 1000L, method = c("residuals", "responses"))
 }
 \arguments{
-\item{formula}{An object of class "\code{\link{formula}}" (or one that can be
-coerced to that class): a symbolic description of the model to be fitted.
-Example: y ~ A + B where: y is a matrix of dimension n * p containing the
-point-wise evaluations of the n functional data on p points or an object of
-class \code{fd} (see \code{fda} package) containing the functional data set
-A, B are n-dimensional vectors containing the values of two covariates.
-Covariates may be either scalar or factors.}
+\item{formula}{An object of class \code{\link[stats:formula]{stats::formula}} (or one that can be
+coerced to that class) specifying the model to be fitted in a symbolic
+fashion. The output variable (left-hand side) of the formula can be either
+a matrix of dimension \eqn{n \times J} containing the pointwise evaluations
+of \eqn{n} functions on the \strong{same} grid of \eqn{J} points, or an object
+of class \code{\link[fda:fd]{fda::fd}}.}
 
-\item{B}{The number of iterations of the MC algorithm to evaluate the
-p-values of the permutation tests. The defualt is \code{B=1000}.}
+\item{dx}{A numeric value specifying the discretization step of the grid used
+to evaluate functional data when it is provided as objects of class
+\code{\link[fda:fd]{fda::fd}}. Defaults to \code{NULL}, in which case a default value of \code{0.01} is
+used which corresponds to a grid of size \code{100L}. Unused if functional data
+is provided in the form of matrices.}
 
-\item{method}{Permutation method used to calculate the p-value of permutation
-tests. Choose "\code{residuals}" for the permutations of residuals under
-the reduced model, according to the Freedman and Lane scheme, and
-"\code{responses}" for the permutation of the responses, according to the
-Manly scheme.}
+\item{B}{An integer value specifying the number of iterations of the MC
+algorithm to evaluate the p-value of the permutation tests. Defaults to
+\code{1000L}.}
 
-\item{dx}{step size for the point-wise evaluations of functional data. dx is
-only used ia an object of class 'fd' is provided as response in the
-formula.}
+\item{method}{A string specifying the method used to calculate the p-value of
+permutation tests. Choices are either \code{"residuals"} which performs
+permutation of residuals under the reduced model according to the Freedman
+and Lane scheme or \code{"responses"}, which performs permutation of the
+responses, according to the Manly scheme. Defaults to \code{"residuals"}.}
 }
 \value{
 An object of class \code{TWTlm}. The function \code{summary} is used to

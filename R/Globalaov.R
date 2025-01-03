@@ -7,25 +7,15 @@
 #' unadjusted p-value function controls the point-wise error rate. The adjusted
 #' p-value function controls the family-wise error rate weakly. Since this is a
 #' global test, the adjusted p-value function is constant.
+#' 
+#' @inheritParams TWTaov
+#' @param stat A string specifying the test statistic used for the global test.
+#'   Choices are either `"Integral"`, in which case the statistic is defined as
+#'   the integral of the F-test statistic over the domain, or `"Max"`, in which
+#'   case the statistic is defined as the maximum of the F-test statistic over
+#'   the domain. Defaults to  `"Integral"`.
 #'
-#' @param formula An object of class "\code{\link{formula}}" (or one that can be
-#'   coerced to that class): a symbolic description of the model to be fitted.
-#'   The output variable of the formula can be either a matrix of dimension
-#'   \code{c(n,J)} collecting the pointwise evaluations of \code{n} functional
-#'   data on the same grid of \code{J} points, or a \code{fd} object from the
-#'   package \code{fda}.
-#' @inheritParams IWT1
-#' @param method Permutation method used to calculate the p-value of permutation
-#'   tests. Choose "\code{residuals}" for the permutations of residuals under
-#'   the reduced model, according to the Freedman and Lane scheme, and
-#'   "\code{responses}" for the permutation of the responses, according to the
-#'   Manly scheme.
-#' @param stat Type of test statistic used for the global test. Possible values
-#'   are: \code{'Integral'} (default) for the integral over the domain of the
-#'   F-test statistic; \code{'Max'} for max over the domain of the F-test
-#'   statistic.
-#'
-#' @return An object of class `IWTaov`. The function \code{summary} is used to
+#' @returns An object of class `IWTaov`. The function \code{summary} is used to
 #'   obtain and print a summary of the results. This object is a list containing
 #'   the following components:
 #'   
@@ -99,15 +89,14 @@
 #'   xrange = c(1, 365)
 #' )
 Globalaov <- function(formula, 
-                      B = 1000, 
                       dx = NULL, 
-                      recycle = TRUE, 
-                      method = 'residuals', 
-                      stat = 'Integral') {
+                      B = 1000L, 
+                      method = c("residuals", "responses"), 
+                      stat = c("Integral", "Max")) {
+  method <- rlang::arg_match(method)
+  stat <- rlang::arg_match(stat)
   cl <- match.call()
   coeff <- formula2coeff(formula, dx = dx)
-  
-  stat <- rlang::arg_match(stat, values = AVAILABLE_STATISTICS()[1:2])
   
   dummynames.all <- colnames(attr(stats::terms(formula), "factors"))
   formula.const <- deparse(formula[[3]], width.cutoff = 500L) #extracting the part after ~ on formula. this will not work if the formula is longer than 500 char

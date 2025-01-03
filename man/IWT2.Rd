@@ -40,41 +40,40 @@ IWT2(
   data1,
   data2,
   mu = 0,
-  B = 1000L,
   dx = NULL,
-  recycle = TRUE,
+  B = 1000L,
   paired = FALSE,
-  alternative = "two.sided",
-  verbose = TRUE
+  alternative = c("two.sided", "less", "greater"),
+  verbose = FALSE,
+  recycle = TRUE
 )
 }
 \arguments{
-\item{data1}{First population's data. Either pointwise evaluations of the
-functional data set on a uniform grid, or an \code{\link[fda]{fd}} object.
-If pointwise evaluations are provided, it should be a matrix of dimensions
-\code{c(n1, J)}, with \code{J} evaluations on columns and \code{n1} units on rows.}
+\item{data1}{Either a numeric matrix or an object of class \code{\link[fda:fd]{fda::fd}}
+specifying the data in the first sample. If the data is provided within a
+matrix, it should be of shape \eqn{n_1 \times J} and it should contain in
+each row one of the \eqn{n_1} functions in the sample and in columns the
+evaluation of each function on a \strong{same} uniform grid of size \eqn{J}.}
 
-\item{data2}{Second population's data. Either pointwise evaluations of the
-functional data set on a uniform grid, or an \code{\link[fda]{fd}} object.
-If pointwise evaluations are provided, it should be a matrix of dimensions
-\code{c(n2, J)}, with \code{J} evaluations on columns and \code{n2} units on rows.}
+\item{data2}{Either a numeric matrix or an object of class \code{\link[fda:fd]{fda::fd}}
+specifying the data in the second sample. If the data is provided within a
+matrix, it should be of shape \eqn{n_2 \times J} and it should contain in
+each row one of the \eqn{n_2} functions in the sample and in columns the
+evaluation of each function on a \strong{same} uniform grid of size \eqn{J}.}
 
-\item{mu}{Functional mean difference under the null hypothesis. Three
-possibilities are available for \code{mu}:
-\itemize{
-\item a constant (in this case, a constant function is used);
-\item a \code{J}-dimensional vector containing the evaluations on the same grid
-which \code{data} are evaluated;
-\item a \code{fd} object from the package \code{fda} containing one function.
-}
+\item{mu}{Either a numeric value or a numeric vector or an object of class
+\code{\link[fda:fd]{fda::fd}} specifying the functional mean difference under the null
+hypothesis. If \code{mu} is a constant, then a constant function is used. If
+\code{mu} is a numeric vector, it must correspond to evaluation of the mean
+difference function on the \strong{same} grid that has been used to evaluate the
+data samples. Defaults to \code{0}.}
 
-Defaults to \code{mu = 0}.}
+\item{B}{An integer value specifying the number of iterations of the MC
+algorithm to evaluate the p-value of the permutation tests. Defaults to
+\code{1000L}.}
 
-\item{B}{The number of iterations of the MC algorithm to evaluate the
-p-values of the permutation tests. Defaults to \code{1000L}.}
-
-\item{paired}{Flag indicating whether a paired test has to be performed.
-Defaults to \code{FALSE}.}
+\item{paired}{A boolean value specifying whether a paired test should be
+performed. Defaults to \code{FALSE}.}
 
 \item{order}{Order of the B-spline basis expansion. Defaults to \code{2L}.}
 
@@ -85,20 +84,22 @@ Defaults to \code{FALSE}.}
 expansion of data. Defaults to \code{floor(dim(data1)[2] / 2)}, leading to an
 interpolating expansion.}
 
-\item{dx}{Used only if an \code{\link[fda]{fd}} object is provided. In this
-case, \code{dx} is the size of the discretization step of the gridused to
-evaluate functional data. If set to \code{NULL}, a grid of size \code{100L} is used.
-Defaults to \code{NULL}.}
+\item{dx}{A numeric value specifying the discretization step of the grid used
+to evaluate functional data when it is provided as objects of class
+\code{\link[fda:fd]{fda::fd}}. Defaults to \code{NULL}, in which case a default value of \code{0.01} is
+used which corresponds to a grid of size \code{100L}. Unused if functional data
+is provided in the form of matrices.}
 
-\item{recycle}{Flag used to decide whether the recycled version of the IWT
-should be used (see Pini and Vantini, 2017 for details). Defaults to
-\code{TRUE}.}
+\item{alternative}{A string specifying the type of alternative hypothesis.
+Choices are \code{"two.sided"}, \code{"less"} or \code{"greater"}. Defaults to
+\code{"two.sided"}.}
 
-\item{alternative}{A character string specifying the alternative hypothesis.
-Must be one of \code{"two.sided"} (default), \code{"greater"} or \code{"less"}.}
+\item{verbose}{A boolean value specifying whether to print the progress of
+the computation. Defaults to \code{FALSE}.}
 
-\item{verbose}{Logical: if \code{FALSE}, reduces the amount of output.
-Default is \code{TRUE}.}
+\item{recycle}{A boolean value specifying whether the recycled version of the
+interval-wise testing procedure should be used. Default is \code{TRUE}. See
+Pini and Vantini (2017) for details. Defaults to \code{TRUE}.}
 }
 \value{
 An object of class \code{\link{IWT2}}, which is a list containing at

@@ -6,36 +6,16 @@
 #' unadjusted p-value function controls the point-wise error rate. The adjusted
 #' p-value function controls the interval-wise error rate.
 #'
-#' @param data1 First population's data. Either pointwise evaluations of the
-#'   functional data set on a uniform grid, or a \code{fd} object from the
-#'   package \code{fda}. If pointwise evaluations are provided, \code{data2} is
-#'   a matrix of dimensions \code{c(n1,J)}, with \code{J} evaluations on columns
-#'   and \code{n1} units on rows.
-#' @param data2 Second population's data. Either pointwise evaluations of the
-#'   functional data set on a uniform grid, or a \code{fd} object from the
-#'   package \code{fda}. If pointwise evaluations are provided, \code{data2} is
-#'   a matrix of dimensions \code{c(n1,J)}, with \code{J} evaluations on columns
-#'   and \code{n2} units on rows.
-#' @param mu Functional mean difference under the null hypothesis. Three
-#'   possibilities are available for \code{mu}: a constant (in this case, a
-#'   constant function is used); a \code{J}-dimensional vector containing the
-#'   evaluations on the same grid which \code{data} are evaluated; a \code{fd}
-#'   object from the package \code{fda} containing one function. The default is
-#'   \code{mu=0}.
-#' @param B The number of iterations of the MC algorithm to evaluate the
-#'   p-values of the permutation tests. The defualt is \code{B=1000}.
-#' @param paired A logical indicating whether a paired test has to be performed.
-#'   Default is \code{FALSE}.
-#' @param dx Used only if a \code{fd} object is provided. In this case,
-#'   \code{dx} is the size of the discretization step of the grid  used to
-#'   evaluate functional data. If set to \code{NULL}, a grid of size 100 is
-#'   used. Default is \code{NULL}.
-#' @param stat Test statistic used for the global test. Possible values are:
-#'   \code{"Integral"}: integral of the squared sample mean difference;
-#'   \code{"Max"}: maximum of the squared sample mean difference;
-#'   \code{"Integral_std"}: integral of the squared t-test statistic;
-#'   \code{"Max_std"}: maximum of the squared t-test statistic. Default is
-#'   \code{"Integral"}.
+#' @inheritParams TWT2
+#' @param stat A string speicyfing the test statistic to use. Possible values
+#'   are:
+#'   
+#'   - `"Integral"`: Integral of the squared sample mean difference.
+#'   - `"Max"`: Maximum of the squared sample mean difference.
+#'   - `"Integral_std"`: Integral of the squared t-test statistic.
+#'   - `"Max_std"`: Maximum of the squared t-test statistic.
+#'   
+#'   Defaults to `"Integral"`.
 #'
 #' @return An object of class `fdatest2`, containing the following components:
 #'   
@@ -78,17 +58,17 @@
 #' which(Global.result$adjusted_pval < 0.05)
 Global2 <- function(data1, data2, 
                     mu = 0, 
+                    dx = NULL, 
                     B = 1000L, 
                     paired = FALSE, 
-                    dx = NULL, 
-                    stat = 'Integral') {
+                    stat = c("Integral", "Max", "Integral_std", "Max_std")) {
+  stat <- rlang::arg_match(stat)
   inputs <- twosamples2coeffs(data1, data2, mu, dx = dx)
   coeff1 <- inputs$coeff1
   coeff2 <- inputs$coeff2
   mu.eval <- inputs$mu
   
   # Check the statistic
-  stat <- rlang::arg_match(stat, values = AVAILABLE_STATISTICS())
   
   n1 <- dim(coeff1)[1]
   n2 <- dim(coeff2)[1]

@@ -6,33 +6,30 @@
 #' unadjusted p-value function controls the point-wise error rate. The adjusted
 #' p-value function controls the family-wise error rate asymptotically.
 #'
-#' @param data1 First population's data. Either pointwise evaluations of the
-#'   functional data set on a uniform grid, or a \code{fd} object from the
-#'   package \code{fda}. If pointwise evaluations are provided, \code{data2} is
-#'   a matrix of dimensions \code{c(n1,J)}, with \code{J} evaluations on columns
-#'   and \code{n1} units on rows.
-#' @param data2 Second population's data. Either pointwise evaluations of the
-#'   functional data set on a uniform grid, or a \code{fd} object from the
-#'   package \code{fda}. If pointwise evaluations are provided, \code{data2} is
-#'   a matrix of dimensions \code{c(n1,J)}, with \code{J} evaluations on columns
-#'   and \code{n2} units on rows.
-#' @param mu Functional mean difference under the null hypothesis. Three
-#'   possibilities are available for \code{mu}: a constant (in this case, a
-#'   constant function is used); a \code{J}-dimensional vector containing the
-#'   evaluations on the same grid which \code{data} are evaluated; a \code{fd}
-#'   object from the package \code{fda} containing one function. The default is
-#'   \code{mu=0}.
-#' @param B The number of iterations of the MC algorithm to evaluate the
-#'   p-values of the permutation tests. The defualt is \code{B=1000}.
-#' @param paired Flag indicating whether a paired test has to be performed.
-#'   Default is \code{FALSE}.
-#' @param dx Used only if a \code{fd} object is provided. In this case,
-#'   \code{dx} is the size of the discretization step of the grid  used to
-#'   evaluate functional data. If set to \code{NULL}, a grid of size 100 is
-#'   used. Default is \code{NULL}.
-#' @param alternative A character string specifying the alternative hypothesis,
-#'   must be one of "\code{two.sided}" (default), "\code{greater}" or
-#'   "\code{less}".
+#' @param data1 Either a numeric matrix or an object of class [`fda::fd`]
+#'   specifying the data in the first sample. If the data is provided within a
+#'   matrix, it should be of shape \eqn{n_1 \times J} and it should contain in
+#'   each row one of the \eqn{n_1} functions in the sample and in columns the
+#'   evaluation of each function on a **same** uniform grid of size \eqn{J}.
+#' @param data2 Either a numeric matrix or an object of class [`fda::fd`]
+#'   specifying the data in the second sample. If the data is provided within a
+#'   matrix, it should be of shape \eqn{n_2 \times J} and it should contain in
+#'   each row one of the \eqn{n_2} functions in the sample and in columns the
+#'   evaluation of each function on a **same** uniform grid of size \eqn{J}.
+#' @param mu Either a numeric value or a numeric vector or an object of class
+#'   [`fda::fd`] specifying the functional mean difference under the null
+#'   hypothesis. If `mu` is a constant, then a constant function is used. If
+#'   `mu` is a numeric vector, it must correspond to evaluation of the mean
+#'   difference function on the **same** grid that has been used to evaluate the
+#'   data samples. Defaults to `0`.
+#' @inheritParams TWTaov
+#' @param paired A boolean value specifying whether a paired test should be
+#'   performed. Defaults to `FALSE`.
+#' @param alternative A string specifying the type of alternative hypothesis.
+#'   Choices are `"two.sided"`, `"less"` or `"greater"`. Defaults to
+#'   `"two.sided"`.
+#' @param verbose A boolean value specifying whether to print the progress of
+#'  the computation. Defaults to `FALSE`.
 #' 
 #' @returns An object of class `fdatest2` containing the following components:
 #' 
@@ -73,11 +70,12 @@
 #' which(TWT.result$adjusted_pval < 0.05)
 TWT2 <- function(data1, data2, 
                  mu = 0, 
+                 dx = NULL, 
                  B = 1000L, 
                  paired = FALSE, 
-                 dx = NULL, 
-                 alternative = "two.sided") {
-  alternative <- rlang::arg_match(alternative, values = AVAILABLE_ALTERNATIVES())
+                 alternative = c("two.sided", "less", "greater"),
+                 verbose = FALSE) {
+  alternative <- rlang::arg_match(alternative)
   
   inputs <- twosamples2coeffs(data1, data2, mu, dx = dx)
   coeff1 <- inputs$coeff1
@@ -143,7 +141,8 @@ TWT2 <- function(data1, data2,
   
   # Second part:
   # combination into subsets
-  cli::cli_h1("Threshold-wise tests")
+  if (verbose)
+    cli::cli_h1("Threshold-wise tests")
   
   thresholds <- c(0, sort(unique(pval)), 1)
   adjusted.pval <- pval # we initialize the adjusted p-value as unadjusted one

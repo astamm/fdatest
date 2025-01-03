@@ -7,23 +7,25 @@
 #' p-value function controls the point-wise error rate. The adjusted p-value
 #' function controls the threshold-wise error rate.
 #'
-#' @param formula An object of class "\code{\link{formula}}" (or one that can be
-#'   coerced to that class): a symbolic description of the model to be fitted.
-#'   The output variable of the formula can be either a matrix of dimension
-#'   \code{c(n,J)} collecting the pointwise evaluations of \code{n} functional
-#'   data on the same grid of \code{J} points, or a \code{fd} object from the
-#'   package \code{fda}.
-#' @param B The number of iterations of the MC algorithm to evaluate the
-#'   p-values of the permutation tests. The defualt is \code{B=1000}.
-#' @param method Permutation method used to calculate the p-value of permutation
-#'   tests. Choose "\code{residuals}" for the permutations of residuals under
-#'   the reduced model, according to the Freedman and Lane scheme, and
-#'   "\code{responses}" for the permutation of the responses, according to the
-#'   Manly scheme.
-#' @param dx Used only if a \code{fd} object is provided. In this case,
-#'   \code{dx} is the size of the discretization step of the grid  used to
-#'   evaluate functional data. If set to \code{NULL}, a grid of size 100 is
-#'   used. Default is \code{NULL}.
+#' @param formula An object of class [`stats::formula`] (or one that can be
+#'   coerced to that class) specifying the model to be fitted in a symbolic
+#'   fashion. The output variable (left-hand side) of the formula can be either
+#'   a matrix of dimension \eqn{n \times J} containing the pointwise evaluations
+#'   of \eqn{n} functions on the **same** grid of \eqn{J} points, or an object
+#'   of class [`fda::fd`].
+#' @param dx A numeric value specifying the discretization step of the grid used
+#'   to evaluate functional data when it is provided as objects of class
+#'   [`fda::fd`]. Defaults to `NULL`, in which case a default value of `0.01` is
+#'   used which corresponds to a grid of size `100L`. Unused if functional data
+#'   is provided in the form of matrices.
+#' @param B An integer value specifying the number of iterations of the MC
+#'   algorithm to evaluate the p-value of the permutation tests. Defaults to
+#'   `1000L`.
+#' @param method A string specifying the method used to calculate the p-value of
+#'   permutation tests. Choices are either `"residuals"` which performs
+#'   permutation of residuals under the reduced model according to the Freedman
+#'   and Lane scheme or `"responses"`, which performs permutation of the
+#'   responses, according to the Manly scheme. Defaults to `"residuals"`.
 #'
 #' @returns An object of class `IWTaov`. The function \code{summary} is used to
 #'   obtain and print a summary of the results. An object of class
@@ -98,9 +100,10 @@
 #'   xrange = c(1, 365)
 #' )
 TWTaov <- function(formula,
+                   dx = NULL,
                    B = 1000L,
-                   method = "residuals",
-                   dx = NULL) {
+                   method = c("residuals", "responses")) {
+  method <- rlang::arg_match(method)
   cl <- match.call()
   coeff <- formula2coeff(formula, dx = dx)
   

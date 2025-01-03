@@ -5,25 +5,9 @@
 #' testing procedure for testing the significance of the effects of scalar
 #' covariates on a functional population.
 #'
-#' @param formula An object of class "\code{\link{formula}}" (or one that can be
-#'   coerced to that class): a symbolic description of the model to be fitted.
-#'   Example: y ~ A + B where: y is a matrix of dimension n * p containing the
-#'   point-wise evaluations of the n functional data on p points or an object of
-#'   class \code{fd} (see \code{fda} package) containing the functional data set
-#'   A, B are n-dimensional vectors containing the values of two covariates.
-#'   Covariates may be either scalar or factors.
-#' @inheritParams IWT1
-#' @param method Permutation method used to calculate the p-value of permutation
-#'   tests. Choose "\code{residuals}" for the permutations of residuals under
-#'   the reduced model, according to the Freedman and Lane scheme, and
-#'   "\code{responses}" for the permutation of the responses, according to the
-#'   Manly scheme. 
-#' @param stat Type of test statistic used for the global test. Possible values
-#'   are: \code{'Integral'} (default) for the integral over the domain of the F-
-#'   and t-test statistics; \code{'Max'} for max over the domain of the F- and
-#'   t-test statistics.
+#' @inheritParams Globalaov
 #'
-#' @return An object of class `IWTlm`. The function \code{summary} is used to
+#' @returns An object of class `IWTlm`. The function \code{summary} is used to
 #'   obtain and print a summary of the results. This object is a list containing
 #'   the following components:
 #'   
@@ -96,16 +80,15 @@
 #'   xrange = c(1, 365)
 #' )
 Globallm <- function(formula,
-                     B = 1000L,
                      dx = NULL,
-                     recycle = TRUE,
-                     method = 'residuals',
-                     stat = 'Integral') {
+                     B = 1000L,
+                     method = c("residuals", "responses"),
+                     stat = c("Integral", "Max")) {
+  method <- rlang::arg_match(method)
+  stat <- rlang::arg_match(stat)
   cl <- match.call()
   coeff <- formula2coeff(formula, dx = dx)
   design_matrix <- formula2design_matrix(formula, coeff)
-  
-  stat <- rlang::arg_match(stat, values = AVAILABLE_STATISTICS()[1:2])
   
   nvar <- dim(design_matrix)[2] - 1
   var_names <- colnames(design_matrix)

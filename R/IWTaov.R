@@ -7,28 +7,12 @@
 #' p-value function controls the point-wise error rate. The adjusted p-value
 #' function controls the interval-wise error rate.
 #'
-#' @param formula An object of class "\code{\link{formula}}" (or one that can be
-#'   coerced to that class): a symbolic description of the model to be fitted.
-#'   The output variable of the formula can be either a matrix of dimension
-#'   \code{c(n,J)} collecting the pointwise evaluations of \code{n} functional
-#'   data on the same grid of \code{J} points, or a \code{fd} object from the
-#'   package \code{fda}.
-#' @param B The number of iterations of the MC algorithm to evaluate the
-#'   p-values of the permutation tests. The defualt is \code{B=1000}.
-#' @param method Permutation method used to calculate the p-value of permutation
-#'   tests. Choose "\code{residuals}" for the permutations of residuals under
-#'   the reduced model, according to the Freedman and Lane scheme, and
-#'   "\code{responses}" for the permutation of the responses, according to the
-#'   Manly scheme.
-#' @param dx Used only if a \code{fd} object is provided. In this case,
-#'   \code{dx} is the size of the discretization step of the grid  used to
-#'   evaluate functional data. If set to \code{NULL}, a grid of size 100 is
-#'   used. Default is \code{NULL}.
-#' @param recycle Flag used to decide whether the recycled version of the IWT
-#'   should be used (see Pini and Vantini, 2017 for details). Default is
-#'   \code{TRUE}.
+#' @inheritParams TWTaov
+#' @param recycle A boolean value specifying whether the recycled version of the
+#'   interval-wise testing procedure should be used. Default is \code{TRUE}. See
+#'   Pini and Vantini (2017) for details. Defaults to `TRUE`.
 #'
-#' @return \code{IWTaov} returns an object of \code{\link{class}}
+#' @returns \code{IWTaov} returns an object of \code{\link{class}}
 #'   "\code{IWTaov}". The function \code{summary} is used to obtain and print a
 #'   summary of the results. An object of class "\code{IWTaov}" is a list
 #'   containing at least the following components:
@@ -124,9 +108,9 @@
 #'   xrange = c(1, 365)
 #' )
 IWTaov <- function(formula, 
-                   B = 1000L, 
-                   method = "residuals", 
                    dx = NULL, 
+                   B = 1000L, 
+                   method = c("residuals", "responses"), 
                    recycle = TRUE) {
   cl <- match.call()
   coeff <- formula2coeff(formula, dx = dx)

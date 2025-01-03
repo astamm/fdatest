@@ -6,32 +6,10 @@
 #' unadjusted p-value function controls the point-wise error rate. The adjusted
 #' p-value function controls the interval-wise error rate.
 #'
-#' @param data1 First population's data. Either pointwise evaluations of the
-#'   functional data set on a uniform grid, or an \code{\link[fda]{fd}} object.
-#'   If pointwise evaluations are provided, it should be a matrix of dimensions
-#'   `c(n1, J)`, with `J` evaluations on columns and `n1` units on rows.
-#' @param data2 Second population's data. Either pointwise evaluations of the
-#'   functional data set on a uniform grid, or an \code{\link[fda]{fd}} object.
-#'   If pointwise evaluations are provided, it should be a matrix of dimensions
-#'   `c(n2, J)`, with `J` evaluations on columns and `n2` units on rows.
-#' @param mu Functional mean difference under the null hypothesis. Three
-#'   possibilities are available for \code{mu}: 
-#'   
-#'   - a constant (in this case, a constant function is used);
-#'   - a \code{J}-dimensional vector containing the evaluations on the same grid
-#'   which \code{data} are evaluated;
-#'   - a \code{fd} object from the package \code{fda} containing one function.
-#'   
-#'   Defaults to `mu = 0`.
-#' @inheritParams IWT1
-#' @param paired Flag indicating whether a paired test has to be performed.
-#'   Defaults to `FALSE`.
-#' @param alternative A character string specifying the alternative hypothesis.
-#'   Must be one of `"two.sided"` (default), `"greater"` or `"less"`.
-#' @param verbose Logical: if \code{FALSE}, reduces the amount of output.
-#'   Default is \code{TRUE}.
+#' @inheritParams TWT2
+#' @inheritParams IWTaov
 #'
-#' @return An object of class \code{\link{IWT2}}, which is a list containing at
+#' @returns An object of class \code{\link{IWT2}}, which is a list containing at
 #'   least the following components:
 #' - `test`: String vector indicating the type of test performed. In this case
 #' equal to `"2pop"`.
@@ -77,13 +55,13 @@
 #' which(IWT.result$adjusted_pval < 0.05)
 IWT2 <- function(data1, data2, 
                  mu = 0, 
-                 B = 1000L, 
                  dx = NULL, 
-                 recycle = TRUE, 
+                 B = 1000L, 
                  paired = FALSE, 
-                 alternative = "two.sided", 
-                 verbose = TRUE) {
-  alternative <- rlang::arg_match(alternative, values = AVAILABLE_ALTERNATIVES())
+                 alternative = c("two.sided", "less", "greater"), 
+                 verbose = FALSE,
+                 recycle = TRUE) {
+  alternative <- rlang::arg_match(alternative)
 
   # data preprocessing
   inputs <- twosamples2coeffs(data1, data2, mu, dx = dx)

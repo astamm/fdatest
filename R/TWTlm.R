@@ -6,23 +6,7 @@
 #' Threshold-wise testing procedure (TWT) for testing the significance of the
 #' effects of scalar covariates on a functional population.
 #'
-#' @param formula An object of class "\code{\link{formula}}" (or one that can be
-#'   coerced to that class): a symbolic description of the model to be fitted.
-#'   Example: y ~ A + B where: y is a matrix of dimension n * p containing the
-#'   point-wise evaluations of the n functional data on p points or an object of
-#'   class \code{fd} (see \code{fda} package) containing the functional data set
-#'   A, B are n-dimensional vectors containing the values of two covariates.
-#'   Covariates may be either scalar or factors.
-#' @param B The number of iterations of the MC algorithm to evaluate the
-#'   p-values of the permutation tests. The defualt is \code{B=1000}.
-#' @param method Permutation method used to calculate the p-value of permutation
-#'   tests. Choose "\code{residuals}" for the permutations of residuals under
-#'   the reduced model, according to the Freedman and Lane scheme, and
-#'   "\code{responses}" for the permutation of the responses, according to the
-#'   Manly scheme.
-#' @param dx step size for the point-wise evaluations of functional data. dx is
-#'   only used ia an object of class 'fd' is provided as response in the
-#'   formula.
+#' @inheritParams TWTaov
 #'
 #' @returns An object of class `TWTlm`. The function \code{summary} is used to
 #'   obtain and print a summary of the results. An object of class
@@ -91,9 +75,10 @@
 #'   xrange = c(1, 365)
 #' )
 TWTlm <- function(formula,
+                  dx = NULL,
                   B = 1000L,
-                  method = "residuals",
-                  dx = NULL) {
+                  method = c("residuals", "responses")) {
+  method <- rlang::arg_match(method)
   cl <- match.call()
   coeff <- formula2coeff(formula, dx = dx)
   design_matrix <- formula2design_matrix(formula, coeff)
